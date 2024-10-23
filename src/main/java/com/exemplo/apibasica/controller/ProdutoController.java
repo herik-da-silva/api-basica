@@ -1,5 +1,6 @@
 package com.exemplo.apibasica.controller;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,12 +22,16 @@ public class ProdutoController {
     // GET: Listar todos os produtos
     @GetMapping
     public List<String> listarProdutos() {
+        System.out.println("Usuário autenticado: " + SecurityContextHolder.getContext().getAuthentication().getName());
+
         return produtos;
     }
 
     // POST: Adicionar um novo produto
     @PostMapping
     public String adicionarProduto(@RequestBody String nome) {
+        System.out.println("Usuário autenticado: " + SecurityContextHolder.getContext().getAuthentication().getName());
+
         produtos.add(nome);
         return "Produto '" + nome + "' adicionado com sucesso!";
     }
@@ -34,6 +39,8 @@ public class ProdutoController {
     // PUT: Atualizar um produto pelo índice
     @PutMapping("/{index}")
     public String atualizarProduto(@PathVariable int index, @RequestBody String nome) {
+        System.out.println("Usuário autenticado: " + SecurityContextHolder.getContext().getAuthentication().getName());
+
         if (index >= produtos.size()) {
             return "Produto não encontrado!";
         }
@@ -44,6 +51,8 @@ public class ProdutoController {
     // DELETE: Remover um produto pelo índice
     @DeleteMapping("/{index}")
     public String removerProduto(@PathVariable int index) {
+        System.out.println("Usuário autenticado: " + SecurityContextHolder.getContext().getAuthentication().getName());
+
         if (index >= produtos.size()) {
             return "Produto não encontrado!";
         }
