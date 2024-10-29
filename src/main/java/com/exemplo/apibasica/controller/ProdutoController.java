@@ -1,6 +1,8 @@
 package com.exemplo.apibasica.controller;
 
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.exemplo.apibasica.model.Produto;
+import com.exemplo.apibasica.repository.ProdutoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/produtos")
@@ -19,44 +22,45 @@ public class ProdutoController {
 
     private final List<String> produtos = new ArrayList<>();
 
+    @Autowired
+    private ProdutoRepository produtoRepository;
+
     // GET: Listar todos os produtos
     @GetMapping
-    public List<String> listarProdutos() {
-        System.out.println("Usuário autenticado: " + SecurityContextHolder.getContext().getAuthentication().getName());
-
-        return produtos;
+    public List<Produto> listarProdutos() {
+        return produtoRepository.findAll();
     }
 
     // POST: Adicionar um novo produto
     @PostMapping
-    public String adicionarProduto(@RequestBody String nome) {
-        System.out.println("Usuário autenticado: " + SecurityContextHolder.getContext().getAuthentication().getName());
-
-        produtos.add(nome);
-        return "Produto '" + nome + "' adicionado com sucesso!";
+    public String adicionarProduto(@RequestBody Produto produto) {
+        produtoRepository.save(produto);
+        return "Produto '" + produto.getNome() + "' adicionado com sucesso!";
     }
 
     // PUT: Atualizar um produto pelo índice
-    @PutMapping("/{index}")
-    public String atualizarProduto(@PathVariable int index, @RequestBody String nome) {
-        System.out.println("Usuário autenticado: " + SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (index >= produtos.size()) {
+    @PutMapping("/{id}")
+    public String atualizarProduto(@PathVariable Long id, @RequestBody Produto produtoAtualizado) {
+        Optional<Produto> produtoExistente = produtoRepository.findById(id);
+        if (produtoExistente.isEmpty()) {
             return "Produto não encontrado!";
         }
-        produtos.set(index, nome);
-        return "Produto atualizado para: " + nome;
+
+        Produto produto = produtoExistente.get();
+        produto.setNome(produtoAtualizado.getNome());
+        produtoRepository.save(produto);
+
+        return "Produto atualizado para: " + produto.getNome();
     }
 
     // DELETE: Remover um produto pelo índice
-    @DeleteMapping("/{index}")
-    public String removerProduto(@PathVariable int index) {
-        System.out.println("Usuário autenticado: " + SecurityContextHolder.getContext().getAuthentication().getName());
-
-        if (index >= produtos.size()) {
+    @DeleteMapping("/{id}")
+    public String removerProduto(@PathVariable Long id) {
+        if (!produtoRepository.existsById(id)) {
             return "Produto não encontrado!";
         }
-        String nome = produtos.remove(index);
-        return "Produto '" + nome + "' removido com sucesso!";
+
+        produtoRepository.deleteById(id);
+        return "Produto removido com sucesso!";
     }
 }
