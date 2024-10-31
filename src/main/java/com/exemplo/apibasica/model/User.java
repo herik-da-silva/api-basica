@@ -1,5 +1,6 @@
 package com.exemplo.apibasica.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @JsonIgnore // Para evitar que a senha seja exposta em respostas JSON
     @Column(nullable = false)
     private String password;
 
