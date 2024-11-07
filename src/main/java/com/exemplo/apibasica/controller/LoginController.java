@@ -28,6 +28,14 @@ public class LoginController {
         this.passwordEncoder = new BCryptPasswordEncoder(); // Criação do PasswordEncoder
     }
 
+    /**
+     * Realiza a autenticação de um usuário.
+     *
+     * @param username
+     * @param password
+     * @return Retorna um token caso o usuário seja autenticado com sucesso.
+     */
+
     @PostMapping
     public ResponseEntity<Map<String, String>> login(@RequestParam String username, @RequestParam String password) {
         // Buscar o usuário pelo nome

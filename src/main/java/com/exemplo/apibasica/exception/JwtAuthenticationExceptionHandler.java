@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
 
+/**
+ * Captura exceções relacionados ao token
+ * Exe: ExpiredJwtException, SignatureException, JwtException.
+ */
 @RestControllerAdvice
 public class JwtAuthenticationExceptionHandler {
 
