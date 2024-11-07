@@ -27,9 +27,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) // Desabilitando CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login").permitAll() // Permitir acesso ao login
+                        .requestMatchers("/api/login").permitAll()
                         .requestMatchers("/api/users/register").permitAll()
-                        .requestMatchers("/api/admin").hasRole("ADMIN") // Somente ADMIN pode acessar
+                        .requestMatchers("/api/admin").hasRole("ADMIN")
                         .anyRequest().authenticated() // Qualquer outra requisição precisa estar autenticada
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtService),

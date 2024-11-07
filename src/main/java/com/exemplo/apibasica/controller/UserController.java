@@ -19,6 +19,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Cadastro de novos usuários através do request.
+     *
+     * @param userDTO Objeto utilizado como paramêtro para transportar os dados do cadastro.
+     * @return Retorno de status identificando a execução da operação.
+     */
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO) {
         try {

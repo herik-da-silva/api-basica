@@ -13,6 +13,12 @@ public class JwtService {
 
     private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
+    /**
+     * Geração de token apartir do username e da role da autenticação.
+     * @param username
+     * @param role
+     * @return Retorna token gerado.
+     */
     public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)              // Define o 'username' como sujeito do token
@@ -23,6 +29,11 @@ public class JwtService {
                 .compact();                        // Converte o JWT para string compactada
     }
 
+    /**
+     * Extrai a role do token da sessão.
+     * @param token
+     * @return Retorna a role do usuário.
+     */
     public String extractRole(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)               // Define a chave secreta usada para validar o token

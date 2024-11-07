@@ -16,6 +16,13 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Cadastro de usuário da aplicação.
+     * Gera o cadastro com uma senha segura em hash.
+     *
+     * @param userDTO
+     * @return Em caso de sucesso retorna o usuário cadastrado.
+     */
     public User registerUser(UserDTO userDTO) {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new IllegalArgumentException("Username já existe!");

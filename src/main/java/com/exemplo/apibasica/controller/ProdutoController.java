@@ -15,29 +15,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador REST para operações de produtos.
+ * Responsável por gerenciar as requisições relacionadas a produtos.
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/produtos")
 public class ProdutoController {
 
-    private final List<String> produtos = new ArrayList<>();
-
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    // GET: Listar todos os produtos
     @GetMapping
     public List<ProdutoDTO> listarProdutos() {
         log.info("Listando todos os produtos");
         return produtoRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    // POST: Adicionar um novo produto
     @PostMapping
     public String adicionarProduto(@RequestBody @Valid ProdutoDTO produtoDTO) {
         log.info("Adicionando produto: {}", produtoDTO.getNome());
@@ -47,7 +46,6 @@ public class ProdutoController {
         return "Produto '" + produto.getNome() + "' adicionado com sucesso!";
     }
 
-    // PUT: Atualizar um produto pelo índice
     @PutMapping("/{id}")
     public String atualizarProduto(@PathVariable Long id, @RequestBody @Valid ProdutoDTO produtoDTO) {
         log.info("Atualizando produto com ID: {}", id);
@@ -66,7 +64,6 @@ public class ProdutoController {
         return "Produto atualizado para: " + produto.getNome();
     }
 
-    // DELETE: Remover um produto pelo índice
     @DeleteMapping("/{id}")
     public String removerProduto(@PathVariable Long id) {
         log.info("Removendo produto com ID: {}", id);

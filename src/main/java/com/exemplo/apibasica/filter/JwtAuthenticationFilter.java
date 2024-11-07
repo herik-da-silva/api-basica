@@ -13,6 +13,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 
+/**
+ * Validação de token.
+ */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -34,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // Adiciona a autenticação no contexto de segurança do Spring
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
-                                "user",  // Pode ser um username, aqui estamos usando uma string fixa
+                                "user",  // TODO Pode ser um username, aqui estamos usando uma string fixa
                                 null, // Credenciais não são necessárias neste caso
                                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)) // Autoridade/role
                         );

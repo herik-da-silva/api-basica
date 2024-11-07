@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Intercepta exceções de validação e retorna respostas informativas.
+ */
 @RestControllerAdvice
 public class ValidationExceptionHandler {
 

@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
 
+/**
+ * Captura exceções relacionadas a banco de dados e evita vazamento de detalhes.
+ * Exe: DataIntegrityViolationException, ConstraintViolationException, SQLException.
+ */
 @RestControllerAdvice
 public class DatabaseExceptionHandler {
 
