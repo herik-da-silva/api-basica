@@ -19,12 +19,16 @@ public class JwtAuthenticationExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(ExpiredJwtException.class)
     public Map<String, String> handleExpiredJwtException(ExpiredJwtException ex) {
-        return Map.of("error", "Token expirado. Por favor, faça login novamente.");
+        return Map.of("status", "error",
+                "message", "Token expirado. Por favor, faça login novamente."
+        );
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(JwtException.class)
     public Map<String, String> handleJwtException(JwtException ex) {
-        return Map.of("error", "Erro de autenticação. Token inválido.");
+        return Map.of("status", "error",
+                "message", "Erro de autenticação. Token inválido."
+        );
     }
 }

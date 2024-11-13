@@ -18,6 +18,9 @@ public class DatabaseExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public Map<String, String> handleDatabaseExceptions(DataIntegrityViolationException ex) {
-        return Map.of("error", "Operação no banco de dados falhou. Verifique os dados e tente novamente.");
+        return Map.of(
+                "status", "error",
+                "message", "Operação no banco de dados falhou. Verifique os dados e tente novamente."
+        );
     }
 }
