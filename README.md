@@ -25,7 +25,10 @@ Este é um projeto básico de uma API RESTful desenvolvido em **Java 21** utiliz
   - **Spring Data JPA**: para integração com banco de dados.
   - **Spring Security**: para controle de autenticação e autorização.
 - **Banco de Dados**: Oracle
-- **Maven**: para gerenciamento de dependências.
+- **Mockito**: para testes unitários
+- **slf4j** e **logback**: para gerenciamento de logs
+- **jjwt**: criaçaõ e manutenção de JWT (JSON Web Tokens)
+- **Maven**: para gerenciamento de dependências e execução de aplicativos Spring Boot.
 
 ---
 
@@ -38,7 +41,7 @@ Este é um projeto básico de uma API RESTful desenvolvido em **Java 21** utiliz
   - Exclusão de produtos.
 - Validação de dados de entrada.
 - Tratamento centralizado de erros.
-- Padrões de segurança básicos, incluindo autenticação e autorização.
+- Padrões de segurança, incluindo autenticação e autorização.
 
 ---
 
@@ -78,17 +81,21 @@ Este é um projeto básico de uma API RESTful desenvolvido em **Java 21** utiliz
 
 ## 🔒 Segurança
 
-O projeto implementa as seguintes medidas básicas de segurança:
+O projeto implementa as seguintes medidas de segurança:
 
 - **Autenticação JWT** (JSON Web Token).
 - **Autorização baseada em perfis de usuário**.
-- Configuração de **CORS** (Cross-Origin Resource Sharing).
+- **Hashing de Senhas com BCrypt**.
+- **Validação de Dados**.
+- **Resposta Segura**.
+- **Proteção Contra CSRF e XSS**.
+- **Rate Limiting**.
+- **Registro e Monitoramento**.
 
 ---
 
 ## 🔧 Melhorias Futuras
 
-- Adicionar testes unitários e de integração.
 - Implementar documentação com **Swagger/OpenAPI**.
 - Criar um pipeline de CI/CD.
 - Melhorar a cobertura de casos de uso.
