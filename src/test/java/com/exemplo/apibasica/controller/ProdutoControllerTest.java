@@ -11,6 +11,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -29,13 +33,38 @@ class ProdutoControllerTest {
 
     @Test
     void deveListarTodosProdutos() {
-        List<Produto> produtos = List.of(new Produto("Produto1", 10.0), new Produto("Produto2", 20.0));
-        Mockito.when(produtoRepository.findAll()).thenReturn(produtos);
+        List<Produto> produtos = List.of(
+                new Produto("Produto1", 10.0),
+                new Produto("Produto2", 20.0)
+        );
 
-        List<ProdutoDTO> resultado = produtoController.listarProdutos();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Produto> paginaDeProdutos = new PageImpl<>(produtos, pageable, produtos.size());
 
-        Assertions.assertEquals(2, resultado.size());
-        Assertions.assertEquals("Produto1", resultado.get(0).getNome());
+        Mockito.when(produtoRepository.findAll(pageable)).thenReturn(paginaDeProdutos);
+
+        ResponseEntity<Map<String, Object>> response = produtoController.listarProdutos(pageable);
+
+        Assertions.assertEquals(200, response.getStatusCodeValue());
+        Assertions.assertEquals("success", response.getBody().get("status"));
+
+        Map<String, Object> responseBody = response.getBody();
+        Assertions.assertNotNull(responseBody);
+
+        @SuppressWarnings("unchecked")
+        List<ProdutoDTO> produtosRetornados = (List<ProdutoDTO>) responseBody.get("data");
+        Assertions.assertNotNull(produtosRetornados);
+        Assertions.assertEquals(2, produtosRetornados.size());
+        Assertions.assertEquals("Produto1", produtosRetornados.get(0).getNome());
+        Assertions.assertEquals("Produto2", produtosRetornados.get(1).getNome());
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> pageInfo = (Map<String, Object>) responseBody.get("page");
+        Assertions.assertNotNull(pageInfo);
+        Assertions.assertEquals(0, pageInfo.get("currentPage"));
+        Assertions.assertEquals(2L, pageInfo.get("totalItems"));
+        Assertions.assertEquals(1, pageInfo.get("totalPages"));
+        Assertions.assertEquals(10, pageInfo.get("pageSize"));
     }
 
     @Test
