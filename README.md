@@ -27,7 +27,7 @@ Este é um projeto básico de uma API RESTful desenvolvido em **Java 21** utiliz
 - **Banco de Dados**: Oracle
 - **Mockito**: para testes unitários
 - **slf4j** e **logback**: para gerenciamento de logs
-- **jjwt**: criaçaõ e manutenção de JWT (JSON Web Tokens)
+- **jjwt**: criação e manutenção de JWT (JSON Web Tokens)
 - **Maven**: para gerenciamento de dependências e execução de aplicativos Spring Boot.
 
 ---
