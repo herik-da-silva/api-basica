@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class ProdutoControllerTest {
 

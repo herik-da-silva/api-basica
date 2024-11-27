@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -27,12 +29,24 @@ public class UserController {
      */
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<Map<String, Object>> registerUser(@Valid @RequestBody UserDTO userDTO) {
         try {
             User newUser = userService.registerUser(userDTO);
-            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+
+            Map<String, Object> successResponse = Map.of(
+                    "status", "success",
+                    "message", "Usuário " + newUser.getUsername() + " cadastrado com sucesso!"
+            );
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            Map<String, Object> errorResponse = Map.of(
+                    "status", "error",
+                    "message", e.getMessage() // Personaliza o motivo do erro
+            );
+
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
+
 }

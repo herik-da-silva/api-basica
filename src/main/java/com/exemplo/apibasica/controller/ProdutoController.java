@@ -43,7 +43,7 @@ public class ProdutoController {
         Page<Produto> page = produtoRepository.findAll(pageable);
         List<ProdutoDTO> produtos = page.getContent().stream().map(this::convertToDTO).collect(Collectors.toList());
 
-        Map<String, Object> response = Map.of(
+        Map<String, Object> successResponse = Map.of(
                 "status", "success",
                 "data", produtos,
                 "page", Map.of(
@@ -54,7 +54,7 @@ public class ProdutoController {
                 )
         );
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(successResponse);
     }
 
     @PostMapping
@@ -65,7 +65,7 @@ public class ProdutoController {
         Produto produtoSalvo = produtoRepository.save(produto);
         log.info("Produto '{}' adicionado com sucesso", produtoSalvo.getNome());
 
-        Map<String, Object> response = Map.of(
+        Map<String, Object> successResponse = Map.of(
                 "status", "success",
                 "data", Map.of(
                         "id", produtoSalvo.getId(),
@@ -75,7 +75,7 @@ public class ProdutoController {
                 "message", "Produto adicionado com sucesso!"
         );
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(successResponse);
     }
 
     @PutMapping("/{id}")
