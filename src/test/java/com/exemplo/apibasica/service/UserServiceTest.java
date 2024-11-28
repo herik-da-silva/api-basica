@@ -3,14 +3,18 @@ package com.exemplo.apibasica.service;
 import com.exemplo.apibasica.dto.UserDTO;
 import com.exemplo.apibasica.model.User;
 import com.exemplo.apibasica.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -30,21 +34,21 @@ public class UserServiceTest {
         userDTO.setUsername("novoUsuario");
         userDTO.setPassword("senha");
 
-        Mockito.when(userRepository.existsByUsername(userDTO.getUsername())).thenReturn(false);
-        Mockito.when(passwordEncoder.encode(userDTO.getPassword())).thenReturn("senha-hash");
+        when(userRepository.existsByUsername(userDTO.getUsername())).thenReturn(false);
+        when(passwordEncoder.encode(userDTO.getPassword())).thenReturn("senha-hash");
 
         User savedUser = new User();
         savedUser.setUsername(userDTO.getUsername());
         savedUser.setPassword("senha-hash");
         savedUser.setRole("USER");
 
-        Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(savedUser);
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         User user = userService.registerUser(userDTO);
 
-        Assertions.assertEquals(userDTO.getUsername(), user.getUsername());
-        Assertions.assertEquals("senha-hash", user.getPassword());
-        Mockito.verify(userRepository).save(Mockito.any(User.class));
+        assertEquals(userDTO.getUsername(), user.getUsername());
+        assertEquals("senha-hash", user.getPassword());
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
@@ -52,8 +56,8 @@ public class UserServiceTest {
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername("usuarioExistente");
 
-        Mockito.when(userRepository.existsByUsername(userDTO.getUsername())).thenReturn(true);
+        when(userRepository.existsByUsername(userDTO.getUsername())).thenReturn(true);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> userService.registerUser(userDTO));
+        assertThrows(IllegalArgumentException.class, () -> userService.registerUser(userDTO));
     }
 }
