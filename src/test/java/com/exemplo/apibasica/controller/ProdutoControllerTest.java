@@ -1,7 +1,9 @@
 package com.exemplo.apibasica.controller;
 
 import com.exemplo.apibasica.dto.ProdutoDTO;
+import com.exemplo.apibasica.model.Fabricante;
 import com.exemplo.apibasica.model.Produto;
+import com.exemplo.apibasica.repository.FabricanteRepository;
 import com.exemplo.apibasica.repository.ProdutoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,11 +36,14 @@ class ProdutoControllerTest {
     @Mock
     private ProdutoRepository produtoRepository;
 
+    @Mock
+    private FabricanteRepository fabricanteRepository;
+
     @Test
     void deveListarTodosProdutos() {
         List<Produto> produtos = List.of(
-                new Produto("Produto1", 10.0),
-                new Produto("Produto2", 20.0)
+                new Produto("Produto1", 10.0, new Fabricante()),
+                new Produto("Produto2", 20.0, new Fabricante())
         );
 
         Pageable pageable = PageRequest.of(0, 10);
@@ -75,11 +80,17 @@ class ProdutoControllerTest {
         ProdutoDTO produtoDTO = new ProdutoDTO();
         produtoDTO.setNome("NovoProduto");
         produtoDTO.setPreco(30.0);
+        produtoDTO.setFabricante(1L);
+
+        Fabricante fabricante = new Fabricante(1L, "Fabricante 01");
 
         Produto produtoSalvo = new Produto();
         produtoSalvo.setId(1L);
         produtoSalvo.setNome("NovoProduto");
         produtoSalvo.setPreco(30.0);
+        produtoSalvo.setFabricante(fabricante);
+
+        when(fabricanteRepository.findById(produtoDTO.getFabricante())).thenReturn(Optional.of(fabricante));
         when(produtoRepository.save(any(Produto.class))).thenReturn(produtoSalvo);
 
         ResponseEntity<Map<String, Object>> response = produtoController.adicionarProduto(produtoDTO);
@@ -90,8 +101,10 @@ class ProdutoControllerTest {
         Map<String, Object> data = (Map<String, Object>) response.getBody().get("data");
         assertEquals(1L, data.get("id"));
         assertEquals("NovoProduto", data.get("nome"));
+        assertEquals(1L, data.get("fabricante"));
         assertEquals("Produto adicionado com sucesso!", response.getBody().get("message"));
 
+        verify(fabricanteRepository, times(1)).findById(produtoDTO.getFabricante());
         verify(produtoRepository, times(1)).save(any(Produto.class));
     }
 
@@ -99,18 +112,24 @@ class ProdutoControllerTest {
     void deveAtualizarProduto() {
         Long produtoId = 1L;
 
+        Fabricante fabricante = new Fabricante(1L, "Fabricante 01");
+
         Produto produto = new Produto();
         produto.setId(produtoId);
         produto.setNome("ProdutoExistente");
         produto.setPreco(15.0);
+        produto.setFabricante(new Fabricante());
 
         when(produtoRepository.findById(produtoId)).thenReturn(Optional.of(produto));
 
         ProdutoDTO produtoDTO = new ProdutoDTO();
         produtoDTO.setNome("ProdutoAtualizado");
         produtoDTO.setPreco(20.0);
+        produtoDTO.setFabricante(fabricante.getId());
 
-        Produto produtoSalvo = new Produto(produtoDTO.getNome(), produtoDTO.getPreco());
+        Produto produtoSalvo = new Produto(produtoDTO.getNome(), produtoDTO.getPreco(), fabricante);
+
+        when(fabricanteRepository.findById(produtoDTO.getFabricante())).thenReturn(Optional.of(fabricante));
         when(produtoRepository.save(any(Produto.class))).thenReturn(produtoSalvo);
 
         ResponseEntity<Map<String, Object>> response = produtoController.atualizarProduto(produtoId, produtoDTO);
@@ -122,8 +141,10 @@ class ProdutoControllerTest {
         assertEquals(produtoId, data.get("id"));
         assertEquals("ProdutoAtualizado", data.get("nome"));
         assertEquals(20.0, data.get("preco"));
+        assertEquals(1L, data.get("fabricante"));
         assertEquals("Produto atualizado com sucesso!", response.getBody().get("message"));
 
+        verify(fabricanteRepository, times(1)).findById(produtoDTO.getFabricante());
         verify(produtoRepository, times(1)).save(any(Produto.class));
     }
 

@@ -1,7 +1,10 @@
 package com.exemplo.apibasica.controller;
 
 import com.exemplo.apibasica.dto.ProdutoDTO;
+import com.exemplo.apibasica.exception.ResourceNotFoundException;
+import com.exemplo.apibasica.model.Fabricante;
 import com.exemplo.apibasica.model.Produto;
+import com.exemplo.apibasica.repository.FabricanteRepository;
 import com.exemplo.apibasica.repository.ProdutoRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +38,9 @@ public class ProdutoController {
 
     @Autowired
     private ProdutoRepository produtoRepository;
+
+    @Autowired
+    private FabricanteRepository fabricanteRepository;
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> listarProdutos(Pageable pageable) {
@@ -70,7 +76,8 @@ public class ProdutoController {
                 "data", Map.of(
                         "id", produtoSalvo.getId(),
                         "nome", produtoSalvo.getNome(),
-                        "preco", produtoSalvo.getPreco()
+                        "preco", produtoSalvo.getPreco(),
+                        "fabricante", produtoSalvo.getFabricante().getId()
                 ),
                 "message", "Produto adicionado com sucesso!"
         );
@@ -96,6 +103,7 @@ public class ProdutoController {
         Produto produto = produtoExistente.get();
         produto.setNome(produtoDTO.getNome());
         produto.setPreco(produtoDTO.getPreco());
+        produto.setFabricante(getFabricante(produtoDTO.getFabricante()));
         produtoRepository.save(produto);
 
         log.info("Produto atualizado para: {}", produto.getNome());
@@ -105,7 +113,8 @@ public class ProdutoController {
                 "data", Map.of(
                         "id", produto.getId(),
                         "nome", produto.getNome(),
-                        "preco", produto.getPreco()
+                        "preco", produto.getPreco(),
+                        "fabricante", produto.getFabricante().getId()
                 ),
                 "message", "Produto atualizado com sucesso!"
         );
@@ -139,8 +148,10 @@ public class ProdutoController {
     // Métodos auxiliares para conversão
     private ProdutoDTO convertToDTO(Produto produto) {
         ProdutoDTO dto = new ProdutoDTO();
+        dto.setId(produto.getId());
         dto.setNome(produto.getNome());
         dto.setPreco(produto.getPreco());
+        dto.setFabricante(produto.getFabricante().getId());
         return dto;
     }
 
@@ -148,6 +159,16 @@ public class ProdutoController {
         Produto produto = new Produto();
         produto.setNome(dto.getNome());
         produto.setPreco(dto.getPreco());
+
+        if (dto.getFabricante() != null) {
+            produto.setFabricante(getFabricante(dto.getFabricante()));
+        }
+
         return produto;
+    }
+
+    private Fabricante getFabricante(Long idFabricante) {
+        return fabricanteRepository.findById(idFabricante)
+                .orElseThrow(() -> new ResourceNotFoundException("Fabricante com ID " + idFabricante + " não encontrado."));
     }
 }
