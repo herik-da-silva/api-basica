@@ -8,7 +8,6 @@ import com.exemplo.apibasica.repository.FabricanteRepository;
 import com.exemplo.apibasica.repository.ProdutoRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -36,11 +35,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/produtos")
 public class ProdutoController {
 
-    @Autowired
-    private ProdutoRepository produtoRepository;
+    private final ProdutoRepository produtoRepository;
+    private final FabricanteRepository fabricanteRepository;
 
-    @Autowired
-    private FabricanteRepository fabricanteRepository;
+    public ProdutoController(ProdutoRepository produtoRepository, FabricanteRepository fabricanteRepository) {
+        this.produtoRepository = produtoRepository;
+        this.fabricanteRepository = fabricanteRepository;
+    }
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> listarProdutos(Pageable pageable) {
