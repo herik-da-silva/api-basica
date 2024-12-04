@@ -3,7 +3,6 @@ package com.exemplo.apibasica.controller;
 import com.exemplo.apibasica.model.User;
 import com.exemplo.apibasica.repository.UserRepository;
 import com.exemplo.apibasica.service.JwtService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,14 +19,15 @@ import java.util.Optional;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private JwtService jwtService;
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public AuthController(JwtService jwtService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.jwtService = jwtService;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * Realiza a autenticação de um usuário.

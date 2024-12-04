@@ -3,7 +3,6 @@ package com.exemplo.apibasica.controller;
 import com.exemplo.apibasica.dto.UserDTO;
 import com.exemplo.apibasica.model.User;
 import com.exemplo.apibasica.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,8 +17,11 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     /**
      * Cadastro de novos usuários através do request.
